@@ -9,11 +9,13 @@
 ```bash
 pip install -r requirements.txt
 
-python collect.py   # 데이터 수집 (구독자 30만+, 6개월+ 휴재 채널 자동 필터)
-python clean.py     # 분석 지표 생성 → data/cleaned/*.csv
+python collect.py              # ① 영상 메타데이터 수집 (구독자 30만+, 6개월+ 휴재 필터)
+python clean.py                # ② 분석 지표 생성 → data/cleaned/*_videos.csv
+python analyze_transcripts.py  # ③ 자막 키워드 분석 → data/cleaned/*_transcripts.csv  (선택)
 ```
 
-Power BI Desktop에서 `data/cleaned/*.csv` 를 임포트하면 바로 시각화 가능합니다.
+Power BI Desktop에서 `data/cleaned/` 폴더 안의 CSV를 임포트합니다.  
+`*_videos.csv` 와 `*_transcripts.csv` 는 **video_id** 를 공통 키로 연결하면 됩니다.
 
 ---
 
@@ -134,12 +136,49 @@ CANDIDATE_NAMES = [
 
 ---
 
+---
+
+## 자막 분석 — 영상 안에서 신호 찾기
+
+`analyze_transcripts.py` 는 영상의 자막 텍스트를 읽어서 아래 5개 카테고리 키워드를 분석합니다.
+
+| 카테고리 | 예시 키워드 | 신호 의미 |
+|---------|-----------|---------|
+| 번아웃 | 쉬고싶다, 지쳤어, 힘들어, 번아웃, 슬럼프 | 가장 직접적인 지침 신호 |
+| 사과_지연 | 오랜만이에요, 미안해요, 기다리셨죠 | 업로드 간격 의식하는 신호 |
+| 불확실_고민 | 모르겠어요, 고민 중, 앞으로 어떻게 | 방향성 잃어가는 신호 |
+| 건강_피로 | 아파요, 피곤해, 스트레스, 잠을 못잤어요 | 컨디션 악화 신호 |
+| 감사_작별 | 감사합니다, 함께해줘서, 사랑해요 | 마지막 인사 뉘앙스 |
+
+### 생성 컬럼
+
+| 컬럼 | 설명 |
+|------|------|
+| `번아웃_count` | 해당 영상에서 키워드 등장 횟수 |
+| `번아웃_per1k` | 1000자당 등장 빈도 (길이 보정값) |
+| `verbal_risk_score` | 5개 카테고리 종합 언급 위험 점수 (0~100) |
+| `rolling_verbal_risk` | 4개 영상 이동평균 (트렌드 파악용) |
+
+### Power BI 연결 방법
+
+1. `*_videos.csv` 와 `*_transcripts.csv` 를 각각 임포트
+2. 모델 뷰 → `video_id` 컬럼으로 두 테이블 관계 연결
+3. 이제 하나의 꺾은선에 `risk_score` (행동) 와 `rolling_verbal_risk` (언급) 을 함께 표시 가능
+
+> **자막이 없는 영상** (비공개, 자막 비활성화 등) 은 자동으로 건너뜁니다.  
+> 자동 생성 자막도 분석하므로 대부분의 한국어 영상에서 동작합니다.
+
+---
+
 ## 파일 구조
 
 ```
-collect.py       수집 스크립트
-clean.py         정제 + 분석 지표 생성
-data/raw/        수집 원본 CSV (gitignore — 외부 공유 X)
-data/cleaned/    Power BI 임포트용 CSV
-.env             YouTube API 키 (gitignore — 절대 공유 X)
+collect.py              ① 영상 메타데이터 수집
+clean.py                ② 분석 지표 생성
+analyze_transcripts.py  ③ 자막 키워드 분석
+data/raw/               수집 원본 CSV (gitignore)
+data/cleaned/           Power BI 임포트용 CSV
+  *_videos.csv          영상 행동 데이터
+  *_transcripts.csv     자막 키워드 데이터
+.env                    YouTube API 키 (gitignore)
 ```
