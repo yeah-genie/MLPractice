@@ -1,0 +1,56 @@
+{
+  "name": "데이터_탐정 브랜드 테마",
+  "dataColors": [
+    "#00D4FF",
+    "#FF4F7B",
+    "#7BFF6A",
+    "#FFD700",
+    "#A78BFA",
+    "#FF8C42",
+    "#00FFC8",
+    "#FF6B6B"
+  ],
+  "background": "#0D1117",
+  "foreground": "#E6EDF3",
+  "tableAccent": "#00D4FF",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "fontFamily": [{ "value": "Pretendard, Malgun Gothic, sans-serif" }],
+        "fontSize": [{ "value": 12 }],
+        "background": [{ "color": { "solid": { "color": "#161B22" } } }],
+        "foreground": [{ "color": { "solid": { "color": "#E6EDF3" } } }]
+      }
+    },
+    "title": {
+      "*": {
+        "color": [{ "solid": { "color": "#00D4FF" } }],
+        "fontSize": [{ "value": 16 }],
+        "fontFamily": [{ "value": "Pretendard, Malgun Gothic, sans-serif" }]
+      }
+    },
+    "card": {
+      "*": {
+        "calloutValue": [
+          {
+            "color": { "solid": { "color": "#00D4FF" } },
+            "fontSize": 32
+          }
+        ],
+        "label": [
+          {
+            "color": { "solid": { "color": "#8B949E" } },
+            "fontSize": 11
+          }
+        ]
+      }
+    }
+  },
+  "good": "#7BFF6A",
+  "neutral": "#FFD700",
+  "bad": "#FF4F7B",
+  "maximum": "#00D4FF",
+  "center": "#A78BFA",
+  "minimum": "#FF4F7B",
+  "null": "#8B949E"
+}

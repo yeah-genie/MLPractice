@@ -1,0 +1,6 @@
+# Power BI 파일은 바이너리로 처리 (diff 시도 방지)
+*.pbix binary
+
+# Excel 수동 데이터 파일
+*.xlsx binary
+*.xls binary
