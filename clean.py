@@ -142,8 +142,8 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     df["title_length"] = df["title"].str.len().fillna(0).astype(int)
 
     # 6. 인게이지먼트 비율
-    df["like_ratio"]    = (df["like_count"]    / df["view_count"].replace(0, pd.NA)).round(4).fillna(0)
-    df["comment_ratio"] = (df["comment_count"] / df["view_count"].replace(0, pd.NA)).round(4).fillna(0)
+    df["like_ratio"]    = (df["like_count"]    / df["view_count"].replace(0, float("nan"))).fillna(0).round(4)
+    df["comment_ratio"] = (df["comment_count"] / df["view_count"].replace(0, float("nan"))).fillna(0).round(4)
 
     # 7. 이동평균 (window=4, 최근 4개 영상 기준)
     # 왜 4개?: 주 1회 업로드 기준 약 한 달 분량 / 들쭉날쭉한 노이즈를 줄여줌

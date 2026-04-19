@@ -70,7 +70,9 @@ def build_youtube():
     api_key = os.getenv("YOUTUBE")
     if not api_key:
         raise EnvironmentError(".env 파일에 YOUTUBE=키 를 추가해주세요.")
-    return build("youtube", "v3", developerKey=api_key)
+    import httplib2
+    http = httplib2.Http(disable_ssl_certificate_validation=True)
+    return build("youtube", "v3", developerKey=api_key, http=http)
 
 
 def search_channel(yt, name: str) -> tuple[str, str, int] | None:
