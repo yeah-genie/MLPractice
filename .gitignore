@@ -1,22 +1,4 @@
-# 무시할 파일/폴더
+.env
 __pycache__/
 *.pyc
-*.pyo
-.env
-.env.local
-.venv
-venv/
-
-# Power BI 임시 파일
-*.pbix.lock
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/
-
-# API 키 / 시크릿
-api_keys.txt
-credentials.json
+data/raw/
