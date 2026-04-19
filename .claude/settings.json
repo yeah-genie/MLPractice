@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "powerbi-remote": {
+      "type": "sse",
+      "url": "https://api.powerbi.com/v1.0/myorg/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer ${POWERBI_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

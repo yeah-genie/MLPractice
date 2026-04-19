@@ -1,7 +1,5 @@
-# 무시할 파일/폴더
+.env
 __pycache__/
 *.pyc
-*.pyo
-.env
-.venv
-venv/
+data/raw/
+.pbi_token_cache.json
