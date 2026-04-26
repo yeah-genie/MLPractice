@@ -52,6 +52,9 @@ DATASETS = {
         CLEAN_DIR / "shinramen" / "brand_summary.csv",
         CLEAN_DIR / "shinramen" / "reviews_classified.csv",
     ],
+    "이용약관 가독성 분석": [
+        CLEAN_DIR / "tos_readability" / "tos_analysis.csv",
+    ],
 }
 
 # pandas dtype → Power BI dataType 변환표
