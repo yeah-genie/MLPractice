@@ -24,18 +24,20 @@ RAW_DIR     = Path("data/raw/tos_readability")
 CLEAN_DIR   = Path("data/cleaned/tos_readability")
 CLEAN_DIR.mkdir(parents=True, exist_ok=True)
 
-# 한국 법률/계약 문서에서 자주 쓰이는 어려운 용어 30개
+# 한국 법률/계약 문서 전용 어려운 용어 28개
+# 제외 기준: 일반 문어체에서도 흔한 단어(이하·이행·갑·을), 현대어 의미가 다른 단어(전보)
 LEGAL_TERMS = [
     "귀책사유", "불가항력", "준거법", "관할법원", "면책",
-    "위탁", "손해배상", "이행", "채무불이행", "소송",
-    "중재", "합의관할", "유효기간", "효력발생", "명시적",
-    "묵시적", "취소불가", "철회불가", "전보", "이하",
-    "본 약관", "전항", "본조", "단서", "갑", "을",
-    "제3자", "포함하되 이에 한정하지 않는", "기재된 바에 따라", "이에 동의하는 것으로 간주",
+    "위탁", "손해배상", "채무불이행", "소송", "중재",
+    "합의관할", "유효기간", "효력발생", "명시적", "묵시적",
+    "취소불가", "철회불가", "전항", "본조", "단서",
+    "제3자", "법적 구속력", "이용계약", "관련 법령",
+    "개인정보처리방침", "포함하되 이에 한정하지 않는",
+    "기재된 바에 따라", "이에 동의하는 것으로 간주",
 ]
 
-# 문장 구분자 (한국어 기준)
-SENT_PATTERN = re.compile(r"[.。!?]\s*")
+# 숫자 뒤 마침표(소수점·조항번호)는 문장 끝으로 보지 않음, 공백 필수
+SENT_PATTERN = re.compile(r"(?<!\d)[.。!?]\s+")
 
 # Power BI용 복잡성 점수 색상 매핑
 GRADE_MAP = [
@@ -61,13 +63,15 @@ def count_legal_terms(text: str) -> dict[str, int]:
 def complexity_score(avg_sent_len: float, legal_density: float) -> float:
     """
     복잡성 지수 0~100
-    avg_sent_len: 평균 문장 길이 (글자 수)
+    avg_sent_len: 평균 문장 길이 (공백 제외 글자 수)
     legal_density: 1000자당 법률 용어 수
+
+    천장값 근거:
+      - 120자: 한국 법률 문서 상위 10% 문장 길이 (공백 제외)
+      - 15개: 정제된 법률 용어 기준 고밀도 임계값
     """
-    # 평균 문장 길이: 50자 이상이면 최고 난이도
-    sent_score   = min(avg_sent_len / 50, 1.0) * 60
-    # 법률 용어 밀도: 10개/1000자 이상이면 최고 난이도
-    legal_score  = min(legal_density / 10, 1.0) * 40
+    sent_score  = min(avg_sent_len / 120, 1.0) * 60
+    legal_score = min(legal_density / 15, 1.0) * 40
     return round(sent_score + legal_score, 1)
 
 
@@ -87,7 +91,8 @@ def analyze_file(path: Path) -> dict:
 
     sentences   = split_sentences(clean)
     sent_count  = len(sentences)
-    avg_sent    = round(sum(len(s) for s in sentences) / max(sent_count, 1), 1)
+    # 공백 제외 글자 수로 통일 (chars 계산과 일관성)
+    avg_sent    = round(sum(len(s.replace(" ", "")) for s in sentences) / max(sent_count, 1), 1)
 
     term_counts = count_legal_terms(clean)
     legal_total = sum(term_counts.values())

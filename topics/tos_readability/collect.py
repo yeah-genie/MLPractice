@@ -26,6 +26,10 @@ HEADERS = {
 
 # 앱명: (URL, 텍스트 추출 셀렉터)
 # 셀렉터가 None이면 <body> 전체 텍스트 사용
+#
+# ⚠ JS 렌더링 앱 주의: 유튜브·인스타그램·틱톡은 React/SPA라 requests+BS4로는
+#   빈 HTML만 반환될 수 있습니다. 실패 시 브라우저에서 직접 텍스트 복사 후
+#   data/raw/tos_readability/{앱명}.txt 로 저장하세요.
 TARGETS = {
     "카카오": (
         "https://www.kakao.com/policy/terms",
@@ -40,7 +44,7 @@ TARGETS = {
         None,
     ),
     "배달의민족": (
-        "https://policy.baemin.com/privacy-policy/kr/baemin-user/",
+        "https://policy.baemin.com/terms-of-service/kr/baemin-user/",  # ToS (개인정보처리방침 아님)
         "div.terms-content",
     ),
     "당근마켓": (
@@ -51,15 +55,15 @@ TARGETS = {
         "https://toss.im/legal/terms-of-service",
         None,
     ),
-    "유튜브": (
+    "유튜브": (  # JS 렌더링 — 실패 시 수동 수집 필요
         "https://www.youtube.com/t/terms?hl=ko",
         "div.ytd-section-list-renderer",
     ),
-    "인스타그램": (
+    "인스타그램": (  # JS 렌더링 — 실패 시 수동 수집 필요
         "https://help.instagram.com/581066165581870",
         "div._4b-8",
     ),
-    "틱톡": (
+    "틱톡": (  # JS 렌더링 — 실패 시 수동 수집 필요
         "https://www.tiktok.com/legal/page/row/terms-of-service/ko-KR",
         None,
     ),
